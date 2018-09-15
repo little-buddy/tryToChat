@@ -1,0 +1,34 @@
+{
+	"presets":[
+		[
+			"@babel/preset-env",{
+			"targets": {
+				"browsers":[
+				"> 1%",
+				"last 2 versions",
+				"not ie <= 8"
+			],
+				"node":"current"
+			},
+			"useBuiltIns": "usage"
+		}],
+		"@babel/preset-flow"
+	],
+	"plugins":[
+			//	这个用于执行时的api注入，必要时还是需要 @babel/polyfill
+		["@babel/plugin-transform-runtime", { "corejs": 2 }],
+			//  修饰器语法
+		["@babel/plugin-proposal-decorators", { "legacy": true }],
+			//  class properties
+		["@babel/plugin-proposal-class-properties",{ "loose": true }],
+		"@babel/plugin-syntax-dynamic-import",
+		"@babel/plugin-proposal-export-default-from",
+		"@babel/plugin-syntax-jsx",
+//		vue plugin
+		"babel-plugin-transform-vue-jsx"
+	]
+}
+
+// 原来我就是引入了 stage-2 才使得用上了 dynamic-import
+
+// 似乎新版省去了 preset-vue 的配置，转而直接在vue-jsx和vue-loader里进行配置了

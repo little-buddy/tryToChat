@@ -1,0 +1,9 @@
+
+
+# directory
+node_modules/
+build/
+
+# config
+.DS_Store
+.idea/
