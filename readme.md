@@ -5,6 +5,10 @@ vue+node 的形式构建一个 具有基本功能的 聊天web应用
 * 聊天互动反馈
 * 用户记录
 * websocket 的使用
+* 登陆页面，能够适应 PC + Web
+* 好友登记，只有登记了好友，才能把相应的聊天记录弄出来
+* 其实可以作临时demo，但我觉得要一点难度，就把状态存储，然后进行处理
+* 先期 选择渲染，后期再迁移 服务端渲染
 
 ###
 * 第一步 -> 用vue构建出聊天页面以及一些基本的互动
@@ -19,15 +23,4 @@ vue+node 的形式构建一个 具有基本功能的 聊天web应用
 
 各框架的版本请参见 package.json
 
-这是我全局安装的eslint规则
 
-	babel-eslint@8.2.1
-	eslint@4.18.2
-	eslint-config-airbnb@16.1.0
-	eslint-import-resolver-reactnative@1.0.2
-	eslint-plugin-babel@4.1.2
-	eslint-plugin-flowtype@2.50.0
-	eslint-plugin-import@2.9.0
-	eslint-plugin-jsx-a11y@6.0.3
-	eslint-plugin-prefer-object-spread@1.2.1
-	eslint-plugin-promise@3.7.0

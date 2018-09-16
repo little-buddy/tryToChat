@@ -7,3 +7,9 @@ build/
 # config
 .DS_Store
 .idea/
+
+# log
+*.log
+
+# img
+src/assets/

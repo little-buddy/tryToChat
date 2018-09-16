@@ -7,6 +7,7 @@ module.exports = {
 	parser: "babel-eslint",
 	extends: [
 		"airbnb-base",
+		"vue",
 		"prettier",
 		"plugin:flowtype/recommended"
 	],
@@ -19,6 +20,8 @@ module.exports = {
 		"import/prefer-default-export": 0,
 		"no-console": 0,
 		"class-methods-use-this":0,
+		'global-require': 0,
+		'import/no-unresolved':0,
 		// 看了官网才知道，要加这句话，不然没反应
 		"prettier/prettier": "error"
 
