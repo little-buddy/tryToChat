@@ -1,6 +1,8 @@
 <template>
 	<div class="container bg">
-		<router-view></router-view>
+		<keep-alive>
+			<router-view></router-view>
+		</keep-alive>
 	</div>
 </template>
 
@@ -10,9 +12,15 @@
 	};
 </script>
 
-<style lang="scss">
+<style>
 	@import './assets/font/iconfont.css';
 
+	*{
+		box-sizing: border-box;
+	}
+	a {
+		text-decoration: none;
+	}
 	.container {
 		position: absolute;
 		top: 0;

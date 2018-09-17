@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "set NODE_ENV=production && webpack-dev-server --config webpack.dev.conf.js",
-    "build": "set NODE_ENV=development && webpack --config webpack.prod.conf.js",
+    "start": "export NODE_ENV=development && webpack-dev-server --config webpack.dev.conf.js",
+    "build": "export NODE_ENV=production && webpack --config webpack.prod.conf.js",
     "pEslint": "./node_modules/eslint/bin/eslint.js --print-config"
   },
   "keywords": [],
@@ -23,7 +23,6 @@
     "@babel/preset-env": "^7.0.0",
     "@babel/preset-flow": "^7.0.0",
     "@babel/preset-stage-0": "^7.0.0",
-    "autoprefixer": "^9.1.5",
     "babel-eslint": "^9.0.0",
     "babel-loader": "^8.0.2",
     "babel-plugin-syntax-jsx": "^6.18.0",
@@ -45,6 +44,7 @@
     "imagemin-webpack-plugin": "^2.2.0",
     "mini-css-extract-plugin": "^0.4.2",
     "node-sass": "^4.9.3",
+    "postcss-cssnext": "^3.1.0",
     "postcss-loader": "^3.0.0",
     "prettier": "^1.14.2",
     "sass-loader": "^7.1.0",

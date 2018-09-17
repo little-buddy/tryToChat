@@ -3,43 +3,70 @@
 		<!-- 唯一父节点 -->
 		<!-- TODO 我想在这里弄个SVG，先放文字，后期有时间再弄 -->
 		<!-- TODO 增加一些入场动画 -->
+		<!-- TODO 字体还需要更换 -->
 		<h1 class="title">We Chat Here ~</h1>
-		<div class="signBox">
-			<div class="topbar">
-				<i class="iconfont icon-back"></i>
-				<i class="iconfont icon-erweima"></i>
-			</div>
-			<br>
-			<div
-				class="avater"
-				:style="{backgroundImage:avater}"
-				@click=""
-			>
+		<br>
+		<div class="wrapper">
+			<div class="signBox">
+				<div class="topbar">
+					<i class="iconfont icon-back"></i>
+					<i class="iconfont icon-erweima"></i>
+				</div>
 				<div
-					:class="{status:true,online:status,hidden:!status}"
-					@click="trrigerStatus"
-				></div>
+					class="avater"
+					:style="{backgroundImage:avater}"
+					@click=""
+				>
+					<div
+						:class="{status:true,online:status,hidden:!status}"
+						@click="trrigerStatus"
+					></div>
+				</div>
+				<br>
+				<input type="text" placeholder="Account" v-model="user.account">
+				<div class="password">
+					<input
+						type="text"
+						placeholder="Password"
+						v-model="user.password"
+						@keyup.enter="onLogin"
+					>
+					<i
+						class="iconfont icon-enter"
+						:class="{activeEnter:showEnter}"
+						@click="onLogin"
+					></i>
+				</div>
+				<br>
+				<i
+					class="iconfont icon-arrow-down"
+					@click="trrigerExtend"
+				></i>
+				<!-- TODO 这里不做验证码了，做一个滑块的插件，先做一个写死的插件，后面再动态生成 -->
 			</div>
-			<br>
-			<input type="text" placeholder="Account">
-			<div class="password">
-				<input type="text" placeholder="Password" v-model="user.password">
-				<i :class="{activeEnter:showEnter}" class="iconfont icon-enter"></i>
+			<div
+				class="extContainer"
+				:class="{noHeight:!extension}"
+			>
+				<div class="extWrapper">
+					<div>
+						<div><input type="checkbox"> <label for="">Remember</label></div>
+						<div>
+							<router-link :to="'forgetpassword'">Retrieve</router-link>
+						</div>
+					</div>
+					<div>
+						<div><input type="checkbox"> <label for="">Auto Login</label></div>
+						<div>
+							<router-link :to="'signup'">Sign up</router-link>
+						</div>
+					</div>
+				</div>
 			</div>
-			<br>
-			<i class="iconfont icon-arrow-down" @click="trrigerExtend"></i>
-			<!-- TODO 这里不做验证码了，做一个滑块的插件，先做一个写死的插件，后面再动态生成 -->
-			<div class="extension" :class="{noHeight:!extension}">
-				<div><input type="checkbox"> Remember</div>
-				<div>Retrieve</div>
-				<div><input type="checkbox">Auto Login</div>
-				<div>Sign up</div>
-			</div>
-			<!--<router-link :to="'chatroom'">登陆</router-link>-->
-			<!--<router-link :to="'forgetpassword'">忘记密码</router-link>-->
-			<!--<router-link :to="'signup'">注册</router-link>-->
-			<div>logo</div>
 		</div>
+
+		<br>
+		<div>logo</div>
 
 		<!-- 唯一的一个问题 就是 验证失败这类的东西应该放在什么地方 -->
 		<!-- 这边的class需要做响应式的，先期虽然不写，但是要留扣子后期去写 -->
@@ -74,6 +101,12 @@
 			},
 			trrigerExtend: function() {
 				this.extension = !this.extension;
+			},
+			onLogin: function() {
+				const { account, password } = this.user;
+				if (account.length && password.length > 4) {
+					console.log("success");
+				}
 			}
 		}
 	};
@@ -81,17 +114,89 @@
 </script>
 
 <style scoped lang="scss">
+	:root {
+		--width: 250px;
+		--shadow: #b8b7b7 0px 5px 15px 3px;
+		--bgColor: #ebedef;
+		--miniRadius: 4px;
+		--extHeight: 80px;
+		--horiazontal-theme: {
+			display: flex;
+			justify-content: center;
+		}
+		--vertical-theme: {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+	}
+
+	.container {
+		@apply --vertical-theme;
+		justify-content: center;
+	}
+
+	.wrapper {
+		position: relative;
+		width: var(--width);
+		overflow: hidden;
+		border-radius: var(--miniRadius);
+		box-shadow: var(--shadow);
+		background-color: var(--bgColor);
+	}
+
+	.topbar {
+		display: flex;
+		align-self: stretch;
+		justify-content: space-between;
+	}
+
+	.extContainer {
+		width: 100%;
+		height: var(--extHeight);
+		overflow: hidden;
+		transition: height .5s;
+		border-bottom-left-radius: var(--miniRadius);
+		border-bottom-right-radius: var(--miniRadius);
+		background-color: var(--bgColor);
+		box-shadow: var(--shadow);
+	}
+
+	.extWrapper {
+		@apply --vertical-theme;
+		justify-content: space-evenly;
+		width: 100%;
+		height: var(--extHeight);
+		flex-wrap: wrap;
+		font-family: cursive;
+		font-size: 14px;
+		& > div {
+			display: flex;
+			justify-content: space-around;
+			align-items: center;
+			align-self: stretch;
+		}
+		input[type=checkbox] {
+			position: absolute;
+			margin-left: -10px
+		}
+
+	}
+
+	.noHeight {
+		height: 0 !important;
+	}
+
 	.signBox {
 		position: relative;
-		width: 250px;
-		margin: auto;
+		width: var(--width);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		border: 1px solid gray;
 		padding: 4px;
 		border-radius: 4px;
-		box-shadow: #7d7d7d 0px 0px 9px 1px;
+		box-shadow: var(--shadow);
+		background-color: #fff;
 	}
 
 	.title {
@@ -127,17 +232,6 @@
 	.activeEnter {
 		color: #0a0114;
 		transition: color 1s;
-	}
-
-	input[type=checkbox] {
-		position: absolute;
-		margin-left: -16px;
-	}
-
-	.noHeight {
-		height: 0 !important;
-		transition: height .5s;
-		overflow: hidden;
 	}
 
 	.login {
@@ -187,22 +281,14 @@
 		}
 	}
 
-	.topbar {
-		display: flex;
-		align-self: stretch;
-		justify-content: space-between;
-	}
-
-	.extension {
-		position: relative;
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-around;
-		width: 220px;
-		height:40px;
-		div {
-			width: 34%;
-
+	.icon-arrow-down {
+		color: #b1b1b1;
+		&:hover {
+			color: lighten(#b1b1b1, 10%);
 		}
 	}
+
 </style>
+
+<!-- 今天增加 nextcss一些写法，至于scss 要不要留着，我也是再考虑 -->
+<!-- 被这个底部的边框弄得头疼死了 -->

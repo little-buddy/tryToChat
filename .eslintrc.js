@@ -9,7 +9,6 @@ module.exports = {
 		"airbnb-base",
 		"vue",
 		"prettier",
-		"plugin:flowtype/recommended"
 	],
 	plugins: [
 		"flowtype",

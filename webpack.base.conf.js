@@ -9,11 +9,11 @@ module.exports = {
 	entry: path.resolve(__dirname, "src/main.js"),
 	output: {
 		path: path.resolve(__dirname, "build"),
-		filename: "js/[name].bundle[hash:6].js"
+		filename: "js/[name].bundle.[hash:6].js"
 		// publicPath:''
 	},
 	resolve: {
-		extensions: [".vue", ".js", ".json"],
+		extensions: [".vue", ".css", ".js", ".json"],
 		alias: {
 			"@": path.join(__dirname, "src")
 		}
@@ -32,7 +32,7 @@ module.exports = {
 				loader: "babel-loader"
 			},
 			{
-				test: /\.scss$/,
+				test: /\.(css|scss)$/,
 				use: [
 					// vue-style-loader 的版本是受 vue-lodaer控制的，所以没必要在package.json里面显示 去安装一下
 					process.env.NODE_ENV !== "production"
@@ -40,24 +40,41 @@ module.exports = {
 						: MiniCssExtractPlugin.loader,
 					{
 						loader: "css-loader",
-						options: { module: true }
+						options: {
+							module: true
+						}
 					},
 					{
 						loader: "postcss-loader",
 						options: {
-							plugins: [require("autoprefixer")()]
+							plugins: [
+								// 与其用 postcss-import 不如 scss来的直接，css4 和 scss混着写嘛
+								require("postcss-cssnext")({
+									browsers: ["last 100 versions"]
+								})
+							]
 						}
 					},
 					"sass-loader"
 				]
 			},
 			{
-				// 图片、字体
-				test: /\.(png|jpg|gif|jpeg|ttf|eot|woff|woff2|svg)$/,
+				// 图片
+				test: /\.(png|jpg|gif|jpeg|svg)$/,
 				use: {
 					loader: "file-loader",
 					options: {
-						name: "[name]_[hash].[ext]"
+						name: "img/[name]-[hash:6].[ext]"
+					}
+				}
+			},
+			{
+				// 字体
+				test: /\.(ttf|eot|woff|woff2)$/,
+				use: {
+					loader: "file-loader",
+					options: {
+						name: "font/[name]-[hash:6].[ext]"
 					}
 				}
 			}
