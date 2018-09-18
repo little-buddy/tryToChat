@@ -8,16 +8,16 @@ const baseConfig = require("./webpack.base.conf");
 
 module.exports = merge(baseConfig, {
 	mode: "production",
-	module: {
-		rules: [
-			{
-				enforce: "pre",
-				test: /\.(js|vue)$/,
-				loader: "eslint-loader",
-				exclude: /node_modules/
-			}
-		]
-	},
+	// module: {
+	// 	rules: [
+	// 		{
+	// 			enforce: "pre",
+	// 			test: /\.(js|vue)$/,
+	// 			loader: "eslint-loader",
+	// 			exclude: /node_modules/
+	// 		}
+	// 	]
+	// },
 	plugins: [
 		new CleanWebpackPlugin([path.resolve(__dirname, "build")]),
 		new MiniCssExtractPlugin({ filename: "css/[name].[hash:6].css" })

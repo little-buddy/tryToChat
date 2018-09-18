@@ -15,12 +15,19 @@
 <style>
 	@import './assets/font/iconfont.css';
 
-	*{
+	* {
 		box-sizing: border-box;
 	}
+
+	body {
+		user-select: none;
+		font-family:'Menlo';
+	}
+
 	a {
 		text-decoration: none;
 	}
+
 	.container {
 		position: absolute;
 		top: 0;

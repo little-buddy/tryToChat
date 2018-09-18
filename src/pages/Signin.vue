@@ -12,16 +12,11 @@
 					<i class="iconfont icon-back"></i>
 					<i class="iconfont icon-erweima"></i>
 				</div>
-				<div
-					class="avater"
-					:style="{backgroundImage:avater}"
-					@click=""
+				<chat-avater
+					:avater="avaterObj"
+					@loginStatusEvent="trrigerLoginStatus"
 				>
-					<div
-						:class="{status:true,online:status,hidden:!status}"
-						@click="trrigerStatus"
-					></div>
-				</div>
+				</chat-avater>
 				<br>
 				<input type="text" placeholder="Account" v-model="user.account">
 				<div class="password">
@@ -50,13 +45,23 @@
 			>
 				<div class="extWrapper">
 					<div>
-						<div><input type="checkbox"> <label for="">Remember</label></div>
+						<chat-checkbox
+							name="remember"
+							text="Remember"
+							v-model="remeberFlag"
+						>
+						</chat-checkbox>
 						<div>
 							<router-link :to="'forgetpassword'">Retrieve</router-link>
 						</div>
 					</div>
 					<div>
-						<div><input type="checkbox"> <label for="">Auto Login</label></div>
+						<chat-checkbox
+							name="autoLogin"
+							text="Auto Login"
+							v-model="autologinFlag"
+						>
+						</chat-checkbox>
 						<div>
 							<router-link :to="'signup'">Sign up</router-link>
 						</div>
@@ -64,45 +69,69 @@
 				</div>
 			</div>
 		</div>
-
 		<br>
 		<div>logo</div>
 
 		<!-- 唯一的一个问题 就是 验证失败这类的东西应该放在什么地方 -->
-		<!-- 这边的class需要做响应式的，先期虽然不写，但是要留扣子后期去写 -->
+		<!-- 这边的class需要做响应式的，先期虽然不写，但是要留口子后期去写 -->
 		<!-- 既然是聊天嘛。就仿QQ客户端做一个web版吧 -->
 	</div>
 </template>
 
 <script>
+	import checkbox from "@/component/checkbox";
+	import avater from "@/component/userbox/avater";
+
+
 	export default {
-		name: "Login",
-		data: function() {
+		name: "Singin",
+		components: {
+			[checkbox.name]: checkbox,
+			[avater.name]: avater
+		},
+		mounted() {
+			setTimeout(() => {
+				this.$destroy();
+			}, 2000);
+
+		},
+		data() {
 			return {
-				avater: "url(" + require("@/assets/img/bg.jpg") + ")",
+				//mock
+				avaterObj: {
+					userAvater: "url(" + require("@/assets/img/bg.jpg") + ")",
+					userName: "708876251",
+					loginStatus: true,
+					avaterClick: () => {
+					},
+					avaterHover: () => {
+					},
+					avaterStyle: ""
+				},
 				user: {
 					account: "",
 					password: ""
 				},
 				status: true,
-				extension: false
+				extension: false,
+				remeberFlag: false,
+				autologinFlag: true
 			};
-
 		},
 		computed: {
-			showEnter: function() {
+			showEnter() {
 				return this.user.password.length > 4;
 			}
 		},
 		methods: {
-			trrigerStatus: function() {
+			trrigerLoginStatus(status) {
 				// 隐身 在线 离线
-				this.status = !this.status;
+				this.avaterObj.logingStatus = !status;
 			},
-			trrigerExtend: function() {
+			trrigerExtend() {
 				this.extension = !this.extension;
 			},
-			onLogin: function() {
+			onLogin() {
 				const { account, password } = this.user;
 				if (account.length && password.length > 4) {
 					console.log("success");
@@ -167,20 +196,21 @@
 		justify-content: space-evenly;
 		width: 100%;
 		height: var(--extHeight);
-		flex-wrap: wrap;
-		font-family: cursive;
-		font-size: 14px;
+		font-size: 12px;
 		& > div {
 			display: flex;
 			justify-content: space-around;
 			align-items: center;
 			align-self: stretch;
+			& > div {
+				&:nth-child(odd) {
+					width: 34%;
+				}
+				&:nth-child(even) {
+					width: 22%
+				}
+			}
 		}
-		input[type=checkbox] {
-			position: absolute;
-			margin-left: -10px
-		}
-
 	}
 
 	.noHeight {
@@ -200,8 +230,6 @@
 	}
 
 	.title {
-		text-align: center;
-		margin-top: 100px;
 		font-size: 40px;
 	}
 
@@ -239,48 +267,6 @@
 		transition: color 2s;
 	}
 
-	.avater {
-		width: 150px;
-		height: 150px;
-		border-radius: 50%;
-		background-position: center center;
-		background-size: cover;
-		background-repeat: no-repeat;
-		display: flex;
-		justify-content: center;
-		align-items: flex-end;
-		border: 2px solid #fefefe;
-		&:hover {
-			border-color: #94d5fe;
-		}
-	}
-
-	.status {
-		width: 20px;
-		height: 20px;
-		margin-bottom: -10px;
-		border-radius: 50%;
-	}
-
-	.online {
-		background-color: #6fda43;
-	}
-
-	.hidden {
-		background-color: #e9c555;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-evenly;
-		align-items: center;
-		&:before, &:after {
-			content: '';
-			background-color: #635022;
-			width: 10px;
-			height: 3px;
-			border-radius: 2px;
-		}
-	}
-
 	.icon-arrow-down {
 		color: #b1b1b1;
 		&:hover {
@@ -292,3 +278,14 @@
 
 <!-- 今天增加 nextcss一些写法，至于scss 要不要留着，我也是再考虑 -->
 <!-- 被这个底部的边框弄得头疼死了 -->
+<!-- 先做头像吧，然后做注册、更密码 -->
+<!-- 一个滑动块验证 -->
+<!-- 一个右上角消息、错误提醒栏 -->
+<!-- 然后直接把这里一块与后端接了 -->
+
+<!-- 这里是一个分割点，在这里我可以直接部署上 -->
+
+<!-- 再接触websocket -->
+<!-- 再做通信以及聊天界面处理 -->
+<!-- 再做移动化 -->
+<!-- 接着 -->
