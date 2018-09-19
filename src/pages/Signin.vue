@@ -12,12 +12,7 @@
 					<i class="iconfont icon-back"></i>
 					<i class="iconfont icon-erweima"></i>
 				</div>
-				<chat-avater
-					:avater="avaterObj"
-					@loginStatusEvent="trrigerLoginStatus"
-				>
-				</chat-avater>
-				<br>
+				<avater-box></avater-box>
 				<input type="text" placeholder="Account" v-model="user.account">
 				<div class="password">
 					<input
@@ -80,26 +75,20 @@
 
 <script>
 	import checkbox from "@/component/checkbox";
-	import avater from "@/component/userbox/avater";
+	import avaterUl from "@/component/Avater/avaterUl";
 
 
 	export default {
 		name: "Singin",
 		components: {
 			[checkbox.name]: checkbox,
-			[avater.name]: avater
-		},
-		mounted() {
-			setTimeout(() => {
-				this.$destroy();
-			}, 2000);
-
+			["avater-box"]: avaterUl
 		},
 		data() {
 			return {
 				//mock
 				avaterObj: {
-					userAvater: "url(" + require("@/assets/img/bg.jpg") + ")",
+					userAvater: "url(" + require("@/assets/img/me.jpg") + ")",
 					userName: "708876251",
 					loginStatus: true,
 					avaterClick: () => {
@@ -139,16 +128,12 @@
 			}
 		}
 	};
-	//	用了 scoped 我都觉得不需要scss。不过一些计算处理方面的还是需要使用scss的
 </script>
 
 <style scoped lang="scss">
+	@import "@/global.scss";
+
 	:root {
-		--width: 250px;
-		--shadow: #b8b7b7 0px 5px 15px 3px;
-		--bgColor: #ebedef;
-		--miniRadius: 4px;
-		--extHeight: 80px;
 		--horiazontal-theme: {
 			display: flex;
 			justify-content: center;
@@ -160,6 +145,7 @@
 		}
 	}
 
+	/* 带全局 container属性 */
 	.container {
 		@apply --vertical-theme;
 		justify-content: center;
@@ -167,11 +153,9 @@
 
 	.wrapper {
 		position: relative;
-		width: var(--width);
-		overflow: hidden;
-		border-radius: var(--miniRadius);
-		box-shadow: var(--shadow);
-		background-color: var(--bgColor);
+		border-radius: $defaultBorderRadius;
+		box-shadow: $defaultBoxshadow;
+		background-color: $bgColor;
 	}
 
 	.topbar {
@@ -182,21 +166,23 @@
 
 	.extContainer {
 		width: 100%;
-		height: var(--extHeight);
+		height: $extHeight;
 		overflow: hidden;
 		transition: height .5s;
-		border-bottom-left-radius: var(--miniRadius);
-		border-bottom-right-radius: var(--miniRadius);
-		background-color: var(--bgColor);
-		box-shadow: var(--shadow);
+		border-bottom-left-radius: $defaultBorderRadius;
+		border-bottom-right-radius: $defaultBorderRadius;
+		background-color: $bgColor;
+		box-shadow: $defaultBoxshadow;
 	}
 
 	.extWrapper {
 		@apply --vertical-theme;
 		justify-content: space-evenly;
 		width: 100%;
-		height: var(--extHeight);
-		font-size: 12px;
+		height: $extHeight;
+		font-size: $h6;
+		position:relative;
+		overflow: hidden;
 		& > div {
 			display: flex;
 			justify-content: space-around;
@@ -219,18 +205,18 @@
 
 	.signBox {
 		position: relative;
-		width: var(--width);
+		width: $homeWidth;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		padding: 4px;
-		border-radius: 4px;
-		box-shadow: var(--shadow);
+		padding:$defaultBorderRadius;
+		border-radius: $defaultBorderRadius;
+		box-shadow: $defaultBoxshadow;
 		background-color: #fff;
 	}
 
 	.title {
-		font-size: 40px;
+		font-size: $h1;
 	}
 
 	input[type=text] {
@@ -242,7 +228,7 @@
 	}
 
 	input[type=text], .password {
-		width: 220px;
+		width: $homeWidth*0.8;
 	}
 
 	.password {

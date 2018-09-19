@@ -12,16 +12,13 @@
 	};
 </script>
 
-<style>
+<style lang="scss">
 	@import './assets/font/iconfont.css';
-
-	* {
-		box-sizing: border-box;
-	}
+	@import "./global";
 
 	body {
 		user-select: none;
-		font-family:'Menlo';
+		font-family: 'Menlo';
 	}
 
 	a {
@@ -37,6 +34,6 @@
 	}
 
 	.bg {
-		background-color: #e7ecf0;
+		background-color: $bgColor;
 	}
 </style>

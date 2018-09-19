@@ -1,0 +1,17 @@
+@import "./variable";
+$avaterArr: (
+	(name:small, size:$homeWidth/4),
+	(name:middle, size:100px),
+	(name:large, size:$homeWidth*0.7)
+);
+
+@for $i from 1 through length($avaterArr) {
+	$item: nth($avaterArr, $i);
+
+	.avater-#{map-get($item,name)} {
+		width: map-get($item, size);
+		height: map-get($item, size);
+	}
+}
+
+
