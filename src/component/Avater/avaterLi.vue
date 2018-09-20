@@ -1,17 +1,14 @@
 <template>
 	<div
-		class="mecontainer"
-		@mouseenter="trrigerClose"
-		@mouseleave="trrigerClose"
+		class="chat-avater-li chat-avater-small"
+		@mouseenter="canClose=true"
+		@mouseleave="canClose=false"
 	>
-		<avater
-			v-if="!$slots.default"
-			class="avater-small"
-			:avater-url="avaterUrl"
-			:login-status="undefined"
-			@statusChange=""
-		></avater>
-		<slot v-else="!$slots.default"></slot>
+		<chat-avater
+			class="chat-avater-small"
+			:src="info.avater"
+			@statusChange="()=>{}"
+		></chat-avater>
 		<span
 			v-if="canClose"
 			class="iconfont icon-chacha"
@@ -25,22 +22,17 @@
 	import avater from "./avater";
 
 	export default {
-		name: "avater-li",
+		name: "chat-avater-li",
 		components: {
-			avater
+			[avater.name]: avater
 		},
 		props: {
-			avaterUrl: String
+			info: {},
 		},
 		data() {
 			return {
 				canClose: false
 			};
-		},
-		methods: {
-			trrigerClose() {
-				this.canClose = !this.canClose;
-			}
 		}
 	};
 </script>
@@ -48,16 +40,23 @@
 <style scoped lang="scss">
 	@import 'variable';
 
-	.mecontainer {
+	/* 这里组件分多少级？ */
+
+	.chat-avater-li {
 		position: relative;
+		@include circle;
+		&:hover{
+			border-color:$--avater-hover-color;
+		}
 	}
 
 	.icon-chacha {
-		color: $error;
 		position: absolute;
-		top: -$iconSize/2;
+		top: 0;
 		left: 0;
+		transform: translateY(-50%);
 		font-size: $iconSize;
+		color: $error;
 	}
 
 </style>

@@ -1,12 +1,12 @@
 <template>
 	<div
-		class="avater"
-		:style="{backgroundImage:'url('+avaterUrl+')'}"
+		class="chat-avater"
+		:style="{backgroundImage:'url('+src+')'}"
 	>
 		<div
 			v-if="needLogin"
-			class="loginStatus"
-			:class="{online:loginStatus,hidden:!loginStatus}"
+			class="chat-login-status"
+			:class="statusClass"
 			@click.stop="change"
 		></div>
 	</div>
@@ -17,12 +17,19 @@
 		name: "chat-avater",
 		mode: "functional",
 		props: {
-			avaterUrl: String,
-			loginStatus: Boolean
+			src: String,
+			loginStatus: [Boolean,undefined]
 		},
 		computed: {
 			needLogin() {
 				return this.loginStatus !== undefined;
+			},
+			statusClass() {
+				return ''
+				if (logingStatus) {
+					return "chat-login-online";
+				}
+				return "chat-login-hidden";
 			}
 		},
 		methods: {
@@ -38,43 +45,41 @@
 <style scoped lang="scss">
 	@import "variable";
 
-	.avater {
-		position:relative;
+	/* 大概准守的是这样一个规则，就是一般上层不添加css，下层就是默认的 */
+
+	.chat-avater {
+		position: relative;
+		box-sizing: border-box;
 		background-position: center center;
 		background-size: cover;
 		background-repeat: no-repeat;
-		border: 2px solid #fefefe;
-		&:hover {
-			border-color: #94d5fe;
-		}
-		border-radius: 50%;
+		@include circle;
 	}
 
-	.loginStatus {
+	.chat-login-status {
 		position: absolute;
-		bottom: -$iconSize/2;
-		left: 50%;
-		margin-left: -$iconSize/2;
 		width: $iconSize;
 		height: $iconSize;
-		border-radius: 50%;
+		left: 50%;
+		bottom: 0;
+		transform: translateX(-50%, -50%);
+
+		@include circle;
 	}
 
-	.online {
-		$green: #6fda43;
-		background-color: $green;
+	.chat-login-online {
+		background-color: $--avater-online-color;
 	}
 
-	.hidden {
-		$yellow: #e9c555;
-		background-color: $yellow;
+	.chat-login-hidden {
 		display: flex;
 		flex-direction: column;
 		justify-content: space-evenly;
 		align-items: center;
+		background-color: $--avater-hidden-color;
 		&:before, &:after {
 			content: '';
-			background-color: darken($yellow, 20%);
+			background-color: darken($--avater-hidden-color, 20%);
 			width: 10px;
 			height: 3px;
 			border-radius: 2px;

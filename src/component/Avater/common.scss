@@ -8,10 +8,8 @@ $avaterArr: (
 @for $i from 1 through length($avaterArr) {
 	$item: nth($avaterArr, $i);
 
-	.avater-#{map-get($item,name)} {
+	.chat-avater-#{map-get($item,name)} {
 		width: map-get($item, size);
 		height: map-get($item, size);
 	}
 }
-
-

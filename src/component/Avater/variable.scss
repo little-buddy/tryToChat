@@ -1,7 +1,19 @@
 // scss common variable
 @import "../../global";
+
 $iconSize: 20px;
-$avaterS:$homeWidth/4;
-$avaterM:$homeWidth*0.5;
-$avaterL:$homeWidth*0.75;
+$avaterS: $homeWidth/4;
+$avaterM: $homeWidth*0.5;
+$avaterL: $homeWidth*0.75;
+
+$--avater-border: 2px solid transparent;
+$--avater-hover-color: $blue;
+$--avater-online-color:#6fda43;
+$--avater-hidden-color:#e9c555;
+
+@mixin circle{
+	border-radius:50%;
+}
+
+
 

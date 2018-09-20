@@ -9,8 +9,8 @@ module.exports = {
 	entry: path.resolve(__dirname, "src/main.js"),
 	output: {
 		path: path.resolve(__dirname, "build"),
-		filename: "js/[name].bundle.[hash:6].js"
-		// publicPath:''
+		filename: "js/[name].bundle.[hash:6].js",
+		publicPath: "http://localhost:8080/"
 	},
 	resolve: {
 		extensions: [".vue", ".css", ".js", ".json"],
