@@ -1,40 +1,40 @@
 // global
 
 // 全局背景色
-$bgColor:#e7ecf0;
+$bgColor: #e7ecf0;
 
 // 登陆框的宽度
-$homeWidth:250px;
-$defaultBorderRadius:4px;
+$homeWidth: 250px;
+$defaultBorderRadius: 4px;
 $defaultBoxshadow: #b8b7b7 0px 5px 15px 3px;
 
 // 扩展高度
-$extHeight:80px;
+$extHeight: 80px;
 
 // 最小字号
-$h6:12px;
-$h1:40px;
+$h6: 12px;
+$h1: 40px;
 
 // color
-$error:#ef7e77;
-$blue:#94d5fe;
+$error: #ef7e77;
+$blue: #94d5fe;
 
 // 全屏
-@mixin fullScreen{
-	position:absolute;
-	top:0;
-	left:0;
-	right:0;
-	bottom:0;
+@mixin fullScreen {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
 }
 
-@mixin vertical-theme{
-	display:flex;
+@mixin vertical-theme {
+	display: flex;
 	flex-direction: column;
 	align-items: center;
 }
 
-@mixin horizontal-theme{
+@mixin horizontal-theme {
 	display: flex;
 	justify-content: center;
 }

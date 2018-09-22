@@ -5,7 +5,7 @@ export const localCache = {
 		// 本地缓存登录哦过的人员账号
 		users: [
 			{
-				account: "001",
+				account: "12354361",
 				username: "test1",
 				avater: require("@/assets/img/avater1.jpg"),
 				// null undefined 为不记住密码，当选择记住，临时的变量会变true
@@ -14,7 +14,7 @@ export const localCache = {
 				loginStatus: true
 			},
 			{
-				account: "002",
+				account: "9435813414",
 				username: "test2",
 				avater: require("@/assets/img/avater2.jpg"),
 				token: null,
@@ -22,7 +22,7 @@ export const localCache = {
 				loginStatus: true
 			},
 			{
-				account: "003",
+				account: "26234028243",
 				username: "test3",
 				avater: require("@/assets/img/avater3.jpg"),
 				token: null,

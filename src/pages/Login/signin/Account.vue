@@ -10,9 +10,13 @@
 			</div>
 			<chat-avater-ul
 				:items="localUsers"
-				:current="0"
+				:liMouseEnter="accountInput"
 			></chat-avater-ul>
-			<input type="text" placeholder="Account" v-model="curUser.account">
+			<input
+				type="text"
+				placeholder="Account"
+				v-model="curUser.account"
+			>
 			<div class="password">
 				<input
 					type="text"
@@ -79,11 +83,13 @@
 		beforeCreate() {
 			const { users } = require("../mock").localCache.localUsersInfo;
 			this.localUsers = users;
+			// default 0 , copy
 			this.curUser = { ...users[0], password: "" };
 		},
 		data() {
 			const { autoLogin, token } = this.curUser;
 			return {
+				curUser: this.curUser,
 				extension: false,
 				isAutoLogin: !!token,
 				isRemember: autoLogin
@@ -103,6 +109,9 @@
 			},
 			switchExt() {
 				this.extension = !this.extension;
+			},
+			accountInput(value) {
+				this.curUser.account = value;
 			}
 		}
 	};
@@ -217,16 +226,17 @@
 
 </style>
 
-<!-- 今天增加 nextcss一些写法，至于scss 要不要留着，我也是再考虑 -->
-<!-- 被这个底部的边框弄得头疼死了 -->
-<!-- 先做头像吧，然后做注册、更密码 -->
+<!-- props 是一个单项数据流绑定，要想双向你就需要添加一个事件，并且这个事件还需要层层传递 -->
+<!-- provide 也只是注入副本，不会共享一份数据 -->
+<!-- 在这种情况下我都觉得可能是需要一份vuex了 -->
+<!-- 不过还是要先尝试下 vue 自带的 $emit $on $watch -->
+<!-- 官方的 watch 方法类似computed，当双向流反馈数据变更的是偶触发回调 -->
+<!-- provide/inject 是注入依赖。不能依赖内部的值 -->
+
+<!-- 这个项目要想移动端适配，还是非常费力的 -->
+
 <!-- 一个滑动块验证 -->
 <!-- 一个右上角消息、错误提醒栏 -->
-<!-- 然后直接把这里一块与后端接了 -->
-
-<!-- 这里是一个分割点，在这里我可以直接部署上 -->
-
 <!-- 再接触websocket -->
 <!-- 再做通信以及聊天界面处理 -->
 <!-- 再做移动化 -->
-<!-- 接着 -->

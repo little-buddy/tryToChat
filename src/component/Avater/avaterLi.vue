@@ -1,16 +1,20 @@
 <template>
 	<div
 		class="chat-avater-li chat-avater-small"
-		@mouseenter="canClose=true"
-		@mouseleave="canClose=false"
+		@mouseenter="mouseEnter"
+		@mouseleave="mouseLeave"
 	>
 		<chat-avater
+			v-if="!$slots.default"
 			class="chat-avater-small"
 			:src="info.avater"
 			@statusChange="()=>{}"
 		></chat-avater>
+		<slot
+			v-else
+		></slot>
 		<span
-			v-if="canClose"
+			v-if="!$slots.default&&canClose"
 			class="iconfont icon-chacha"
 			@click.stop="$emit('close')"
 		></span>
@@ -27,12 +31,33 @@
 			[avater.name]: avater
 		},
 		props: {
-			info: {},
+			info: {}
 		},
 		data() {
 			return {
-				canClose: false
+				canClose: false,
+				point: null
 			};
+		},
+		methods: {
+			mouseEnter($event) {
+				// 如果没有绑定事件，这个emit 是相当于没有触发的
+				// if (!lock){
+				// 	const { x, y } = $event;
+				// 	point
+				// }
+					const { x, y } = $event;
+				console.log($event, x, y);
+
+				// 添加一个 username 提示框
+				this.$emit("mouseOver", this.info.account, "account");
+				this.canClose = true;
+			},
+			mouseLeave() {
+				// 取消一个username 提示框
+				this.$emit("mouseOver", "", "account");
+				this.canClose = false;
+			}
 		}
 	};
 </script>
@@ -44,9 +69,8 @@
 
 	.chat-avater-li {
 		position: relative;
-		@include circle;
-		&:hover{
-			border-color:$--avater-hover-color;
+		&:hover .chat-avater {
+			border-color: $--avater-hover-color;
 		}
 	}
 

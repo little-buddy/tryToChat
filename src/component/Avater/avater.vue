@@ -4,7 +4,7 @@
 		:style="{backgroundImage:'url('+src+')'}"
 	>
 		<div
-			v-if="needLogin"
+			v-if="needStatus"
 			class="chat-login-status"
 			:class="statusClass"
 			@click.stop="change"
@@ -15,18 +15,18 @@
 <script>
 	export default {
 		name: "chat-avater",
-		mode: "functional",
 		props: {
 			src: String,
-			loginStatus: [Boolean,undefined]
+			needStatus: Boolean
+		},
+		data(){
+			return{
+				loginStatus:true
+			}
 		},
 		computed: {
-			needLogin() {
-				return this.loginStatus !== undefined;
-			},
 			statusClass() {
-				return ''
-				if (logingStatus) {
+				if (this.loginStatus) {
 					return "chat-login-online";
 				}
 				return "chat-login-hidden";
@@ -54,6 +54,8 @@
 		background-size: cover;
 		background-repeat: no-repeat;
 		@include circle;
+		/* 如果这里使用 transparent */
+		border:2px solid #fff;
 	}
 
 	.chat-login-status {
@@ -62,7 +64,7 @@
 		height: $iconSize;
 		left: 50%;
 		bottom: 0;
-		transform: translateX(-50%, -50%);
+		transform: translate(-50%, 50%);
 
 		@include circle;
 	}
@@ -88,12 +90,6 @@
 </style>
 
 <!-- 这里如果要做响应式，就需要全线切入 rem -->
-
-<!-- 那么一般的站点是怎么做到的呢？普通的文档很简单，就是那样 -->
-
-<!-- 这里的avater 如果不分开来实现，那又怎么实现呢？我觉得一定是分开来实现的。 -->
-
-<!-- 不光是vue中，而是所有web端，一旦将组件之间的样式分开。你就需要去父级写样式，毕竟有些样式是和父级相关联的 -->
 
 <!-- 但是在移动端用rem，似乎又可以忽略这一点，这个项目我初期并不打算考虑，移动端优化，后续一定会再重构一次 -->
 
