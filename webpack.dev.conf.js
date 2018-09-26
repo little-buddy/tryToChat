@@ -15,7 +15,6 @@ module.exports = merge(baseConfig, {
 		// port: "3000"
 	}
 });
-console.log(exports);
 
 // module里面定义了扫描范围，plugins里面进行 但组件文件拆分
 

@@ -1,0 +1,16 @@
+@import "./variable";
+
+$avatarArr: (
+	(name:small, size:$avatarS),
+	(name:middle, size:$avatarM),
+	(name:large, size:$avatarL)
+);
+
+@for $i from 1 through length($avatarArr) {
+	$item: nth($avatarArr, $i);
+
+	.chat-avatar-#{map-get($item,name)} {
+		width: map-get($item, size);
+		height: map-get($item, size);
+	}
+}

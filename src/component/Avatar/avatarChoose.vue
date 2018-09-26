@@ -1,54 +1,53 @@
 <template>
-	<div class="chat-avater-box">
-		<div class="chat-avater-ul">
-			<chat-avater-li
-				v-for="(user,index) in items"
-				:info="user"
-				@close="removeByIndex(index)"
-				@click.native="toChoose($event,index)"
-				@mouseOver="(value,type)=>{liMouseEnter(value,type)}"
-				:key="index"
-			></chat-avater-li>
-			<chat-avater-li
-				:info="{}"
-				class="'chat-avater-small'"
-				@click.native="toChoose($event)"
+	<div class="chat-avatar-box">
+		<div class="chat-avatar-ul">
+			<div
+				v-for="(user,index) in avatarList"
+				class="chat-avatar-li"
 			>
-				<div class="addAvater"></div>
-			</chat-avater-li>
-		</div>
-		<div
-			v-if="mask"
-			class="chat-avater-ul-curU"
-		>
-			<chat-avater
-				class="animation"
-				:class="aniClass"
-				:style="aniStyle"
-				:src="activeAvater.avaterUrl"
-				:need-status="!lock"
-				@click.native="noChoose"
-			></chat-avater>
+				<!-- 这里我不想要传递index啊 -->
+				<chat-avatar-solo
+					:account="user.account"
+					:canClose="isListEnd(index)"
+					@closeEvent="removeByIndex(index)"
+					:hoverHandle="hoverHandle(index)"
+					:key="index"
+				>
+					<chat-avatar
+						v-if="isListEnd(index)"
+						:src="user.avatar"
+						:nickname="user.nickname"
+						@click.native="toChoose($event,index)"
+					></chat-avatar>
+					<div
+						v-else
+						class="chat-avatar-small"
+						@click.native="toChoose($event)"
+					>
+						<div class="addAvater"></div>
+					</div>
+				</chat-avatar-solo>
+			</div>
 		</div>
 	</div>
 </template>
 
 <script>
-	import avater from "./avater";
-	import avaterLi from "./avaterLi";
+	import avatar from "./avatar";
+	import avatarSolo from "./avatarSolo";
 
 	const defaultAvater = require("@/assets/img/me.jpg");
 	const aniTime = 700;
 	export default {
-		name: "chat-avater-ul",
+		name: "chat-avatar-choose",
 		components: {
-			[avater.name]: avater,
-			[avaterLi.name]: avaterLi
+			[avatar.name]: avatar,
+			[avatarSolo.name]: avatarSolo
 		},
 		props: {
-			items: {
+			avatarList: {
 				type: Array,
-				default: []
+				default: () => ([{}])
 			},
 			current: {
 				type: Number,
@@ -56,28 +55,39 @@
 			},
 			liMouseEnter: Function
 		},
-		mounted(){
-			console.log(this.liMouseEnter)
-		},
 		data() {
-			console.log(this.liMouseEnter);
+			this.avatarList.push({})
 			return {
+				// big avatar
 				mask: true,
+				// 节流锁
 				lock: false,
 				activeAvater: {
-					avaterUrl:
-						this.items[this.current] ? this.items[this.current].avater :
+					avatarUrl:
+						this.avatarList[this.current] ? this.avatarList[this.current].avatar :
 							defaultAvater,
 					// [warning]! this value depend on css value
 					location: { top: 18, left: 16 }
 				},
 				aniStyle: null,
-				aniClass: "chat-avater-large"
+				aniClass: "chat-avatar-large",
+				hoverArg: {
+					name: "",
+					style: ""
+				}
 			};
 		},
 		methods: {
 			removeByIndex(index) {
-				this.avaters.splice(index, 1);
+				this.avatars.splice(index, 1);
+			},
+			isListEnd(index) {
+				return this.avatarList.length !== (index + 1)
+			},
+			hoverHandle(index) {
+				return (account) => {
+					this.$emit('hoverEvent', account)
+				}
 			},
 			toChoose($event, index) {
 				if (this.lock) {
@@ -88,9 +98,9 @@
 				// overflow
 				const { scrollTop } = $event.currentTarget.parentNode;
 				this.activeAvater = index !== undefined ?
-					{ avaterUrl: this.items[index].avater } :
+					{ avatarUrl: this.items[index].avatar } :
 					// default
-					{ avaterUrl: defaultAvater };
+					{ avatarUrl: defaultAvater };
 
 				const left = offsetLeft;
 				const top = offsetTop - scrollTop;
@@ -101,7 +111,7 @@
 					top: `${top}px`,
 					left: `${left}px`
 				};
-				this.aniClass = "chat-avater-small";
+				this.aniClass = "chat-avatar-small";
 
 				// this.$forceUpdate 需要满足一定的时间间隔 才能去触发，写angular的时候就觉得forceUpdate太暴力了
 				// 解决暴力的办法就是预先在data内声明，这里说它是纯组件，我都不信，超耦合的ui响应，以及对应的css名称
@@ -114,7 +124,7 @@
 				// 这里还是需要一定间隔的，否则频繁点击就等效nextTick功能了
 				setTimeout(() => {
 					this.aniStyle = null;
-					this.aniClass = "chat-avater-large";
+					this.aniClass = "chat-avatar-large";
 				}, 100);
 				// animation end to run
 				setTimeout(() => {
@@ -129,7 +139,7 @@
 					return;
 				}
 				const { top, left } = this.activeAvater.location;
-				this.aniClass = "chat-avater-small";
+				this.aniClass = "chat-avatar-small";
 				this.aniStyle = { top: `${top}px`, left: `${left}px` };
 				this.lock = true;
 				setTimeout(() => {
@@ -140,18 +150,21 @@
 					this.mask = !this.mask;
 				}, aniTime);
 			}
+
 		}
 	};
+
 </script>
 
 <style lang="scss">
 	@import 'common';
 
-	.chat-avater-box {
+	.chat-avatar-box {
 		position: relative;
+		align-self: stretch;
 	}
 
-	.chat-avater-ul-curU {
+	.chat-avatar-ul-curU {
 		position: absolute;
 		background-color: #fff;
 		width: 100%;
@@ -167,19 +180,19 @@
 	}
 
 	/* transition */
-	.chat-avater-large {
+	.chat-avatar-large {
 		left: 50%;
-		margin-left: -($avaterL/2);
-		margin-top: -($avaterL/2);
+		margin-left: -($avatarL/2);
+		margin-top: -($avatarL/2);
 		top: 50%;
 	}
 
-	.chat-avater-ul {
+	.chat-avatar-ul {
 		height: 200px;
 		padding: $iconSize/2 0; /* 为了显示 chacha 而设的 */
-		box-sizing: border-box;
 		overflow: scroll;
-		& .chat-avater-li {
+		& .chat-avatar-li {
+			position: relative;
 			margin-left: $homeWidth/16;
 			margin-top: $homeWidth/32;
 			float: left;
@@ -202,7 +215,7 @@
 		border-radius: 50%;
 		&:after, &:before {
 			$height: 2px;
-			$width: $avaterS*0.6;
+			$width: $avatarS*0.6;
 			content: '';
 			position: absolute;
 			width: $width;

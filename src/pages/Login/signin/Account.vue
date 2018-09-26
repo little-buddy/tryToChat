@@ -8,20 +8,22 @@
 				<i class="iconfont icon-back"></i>
 				<i class="iconfont icon-erweima"></i>
 			</div>
-			<chat-avater-ul
-				:items="localUsers"
-				:liMouseEnter="accountInput"
-			></chat-avater-ul>
+			<!-- 这里会有一堆的时间监听，暂时没想好怎么分派 -->
+			<chat-avatar-choose
+				:avatarList="localUsers"
+				@hoverEvent="hoverUpdate"
+			></chat-avatar-choose>
+
 			<input
 				type="text"
 				placeholder="Account"
-				v-model="curUser.account"
+				v-model="account"
 			>
 			<div class="password">
 				<input
-					type="text"
+					type="password"
 					placeholder="Password"
-					v-model="curUser.password"
+					v-model="password"
 					@keyup.enter="onLogin"
 				>
 				<i
@@ -71,51 +73,60 @@
 
 <script>
 	import checkbox from "@/component/checkbox";
-	import avaterUl from "@/component/Avater/avaterUl";
+	import avatarChoose from "@/component/Avatar/avatarChoose";
 
 
 	export default {
-		name: "singin-account",
+		name: "signin-account",
 		components: {
 			[checkbox.name]: checkbox,
-			[avaterUl.name]: avaterUl
+			[avatarChoose.name]: avatarChoose
 		},
+		// request
 		beforeCreate() {
-			const { users } = require("../mock").localCache.localUsersInfo;
+			const { users } = require("../mock").localCache;
+			// all cacheUsers
 			this.localUsers = users;
-			// default 0 , copy
-			this.curUser = { ...users[0], password: "" };
+			//	当前的用户信息无非是与该页面有所互动
 		},
 		data() {
-			const { autoLogin, token } = this.curUser;
+			const curUser: User = this.localUsers[0]
+			const { account, token, isAutoLogin, isRemember, loginStatus } = curUser
+			// 虽然每一处都有这个数据，但是此处不需要头像，因为头像是放在另外一个组件内执行的
+			// account password token 适用于提交的
 			return {
-				curUser: this.curUser,
+				account,
+				token,
 				extension: false,
-				isAutoLogin: !!token,
-				isRemember: autoLogin
+				isAutoLogin,
+				isRemember,
+				loginStatus,
+				password: ''
 			};
+			//	不论记住、登陆，都会基础token，所以token没法用于判断
 		},
 		computed: {
 			showEnter() {
-				return this.curUser.password.length > 4;
+				return this.password.length > 4;
 			}
 		},
 		methods: {
 			onLogin() {
-				const { account, password } = this.curUser;
-				if (account.length && password.length > 4) {
+				if (this.account.length && this.password.length > 4) {
 					console.log("success");
 				}
 			},
 			switchExt() {
 				this.extension = !this.extension;
 			},
-			accountInput(value) {
-				this.curUser.account = value;
+			hoverUpdate(account) {
+				this.account = account
+				this.password = ""
 			}
 		}
 	};
 </script>
+<!-- 本地一定存储了个人的信息，登陆成功会将额外的个人信息简介天骄到那个状态下，登陆成功之后就会有记录 -->
 
 <style scoped lang="scss">
 	@import "../../../global";
@@ -145,7 +156,7 @@
 		background-color: #fff;
 	}
 
-	input[type=text] {
+	input[type=text], input[type=password] {
 		background-color: transparent;
 		outline: none;
 		border: 0;

@@ -1,76 +1,74 @@
 <template>
 	<div
-		class="chat-avater-li chat-avater-small"
-		@mouseenter="mouseEnter"
-		@mouseleave="mouseLeave"
+		@mouseenter="onOverHandle"
+		@mouseleave="onOutHandle"
+		@click="onClickHandle"
 	>
-		<chat-avater
-			v-if="!$slots.default"
-			class="chat-avater-small"
-			:src="info.avater"
-			@statusChange="()=>{}"
-		></chat-avater>
-		<slot
-			v-else
-		></slot>
-		<span
-			v-if="!$slots.default&&canClose"
+		<slot></slot>
+		<div
+			v-if="canClose&&hoverMark"
 			class="iconfont icon-chacha"
-			@click.stop="$emit('close')"
-		></span>
+			@click="$emit('closeEvent')"
+		></div>
 	</div>
 </template>
 
-<!-- 这里就涉及到组件跨层了 -->
+<!-- 我觉得还是必要包裹 avatar的，毕竟 -->
+<!-- 对于这里 li的mouse事件其实就是为了分层，便于管理，click事件应该是属于这一层的 -->
 <script>
-	import avater from "./avater";
+	import avatar from "./avatar";
 
 	export default {
-		name: "chat-avater-li",
+		name: "chat-avatar-solo",
 		components: {
-			[avater.name]: avater
+			[avatar.name]: avatar
 		},
 		props: {
-			info: {}
+			canClose: {		// 默认是可以关闭的
+				type: Boolean,
+				default: true
+			},
+			account: String,
+			hoverHandle: Function
 		},
 		data() {
 			return {
-				canClose: false,
-				point: null
+				hoverMark: false
 			};
 		},
 		methods: {
-			mouseEnter($event) {
-				// 如果没有绑定事件，这个emit 是相当于没有触发的
-				// if (!lock){
-				// 	const { x, y } = $event;
-				// 	point
-				// }
-					const { x, y } = $event;
-				console.log($event, x, y);
-
-				// 添加一个 username 提示框
-				this.$emit("mouseOver", this.info.account, "account");
-				this.canClose = true;
+			onOverHandle($event) {
+				this.hoverMark = true
+				this.hoverHandle(this.account)
+				// this.$emit("hoverEvent",
+				// 	$event, { account: this.info.account, name: this.info.username });
+				// this.canClose = true;
 			},
-			mouseLeave() {
+			onOutHandle($event) {
+				this.hoverMark = false
+				this.hoverHandle("")
 				// 取消一个username 提示框
-				this.$emit("mouseOver", "", "account");
-				this.canClose = false;
+				// this.$emit("hoverEvent", $event, { account: "", name: "" });
+				// this.canClose = false;
+				//	对this.account 的操作
+			},
+			onClickHandle($event) {
+				//	需要更新 account password loginStatus ...
 			}
 		}
 	};
 </script>
+<!-- 其实它这里是有2 类事件的 hover click -->
 
 <style scoped lang="scss">
 	@import 'variable';
 
 	/* 这里组件分多少级？ */
 
-	.chat-avater-li {
+	.chat-avatar-li {
 		position: relative;
-		&:hover .chat-avater {
-			border-color: $--avater-hover-color;
+		&:hover .chat-avatar {
+			border-color: $--avatar-hover-color;
 		}
 	}
 

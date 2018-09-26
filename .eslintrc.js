@@ -7,8 +7,10 @@ module.exports = {
 	parser: "babel-eslint",
 	extends: [
 		"airbnb-base",
-		"vue",
+		"plugin:flowtype/recommended",
 		"prettier",
+		"prettier/flowtype",
+		"vue",
 	],
 	plugins: [
 		"flowtype",
