@@ -2,22 +2,20 @@
 	<!-- TODO 我想在这里弄个SVG，先放文字，后期有时间再弄 -->
 	<!-- TODO 增加一些入场动画 -->
 	<!-- TODO 字体还需要更换 -->
-	<div class="login-account-container">
+	<!-- TODO 我想在这里点击登陆的时候，弹出一个跨快框，滑块框匹配成功才发送请求，然后进行页面的跳转 -->
+	<div>
 		<div class="login-account-box">
-			<div class="login-account-topbar">
-				<i class="iconfont icon-back"></i>
-				<i class="iconfont icon-erweima"></i>
-			</div>
-			<!-- 这里会有一堆的时间监听，暂时没想好怎么分派 -->
 			<chat-avatar-choose
 				:avatarList="localUsers"
 				@hoverEvent="hoverUpdate"
+				ref="$choose"
 			></chat-avatar-choose>
 
 			<input
 				type="text"
 				placeholder="Account"
 				v-model="account"
+				@focus="pwdFocus"
 			>
 			<div class="password">
 				<input
@@ -25,6 +23,7 @@
 					placeholder="Password"
 					v-model="password"
 					@keyup.enter="onLogin"
+					@focus="pwdFocus"
 				>
 				<i
 					class="iconfont icon-enter"
@@ -37,7 +36,6 @@
 				class="iconfont icon-arrow-down"
 				@click="switchExt"
 			></i>
-			<!-- TODO 这里不做验证码了，做一个滑块的插件，先做一个写死的插件，后面再动态生成 -->
 		</div>
 		<div
 			class="login-ext-tontainer"
@@ -113,7 +111,8 @@
 		methods: {
 			onLogin() {
 				if (this.account.length && this.password.length > 4) {
-					console.log("success");
+					console.log("弹出滑块框，然后进行回调");
+				//	something.then((boolean)=>{ 失败的话就清空密码，不知道这里是通过if-else的形式还是，用 $mount 的形式去操作 })
 				}
 			},
 			switchExt() {
@@ -122,6 +121,13 @@
 			hoverUpdate(account) {
 				this.account = account
 				this.password = ""
+			},
+			pwdFocus() {
+				//	我需要在这个里面去触发一些东西。比如调用某个元素的方法
+				if (!this.$refs.$choose.mask) {
+					this.$refs.$choose.toChoose()
+				}
+
 			}
 		}
 	};
@@ -131,28 +137,13 @@
 <style scoped lang="scss">
 	@import "../../../global";
 
-	.login-account-container {
-		position: relative;
-		border-radius: $defaultBorderRadius;
-		box-shadow: $defaultBoxshadow;
-		background-color: $bgColor;
-	}
-
-	.login-account-topbar {
-		display: flex;
-		align-self: stretch;
-		justify-content: space-between;
-	}
-
 	.login-account-box {
 		position: relative;
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		width: $homeWidth;
-		padding: $defaultBorderRadius;
+		box-shadow: 0px 15px 20px 0px #c1c1c1;
 		border-radius: $defaultBorderRadius;
-		box-shadow: $defaultBoxshadow;
 		background-color: #fff;
 	}
 
@@ -239,9 +230,6 @@
 
 <!-- props 是一个单项数据流绑定，要想双向你就需要添加一个事件，并且这个事件还需要层层传递 -->
 <!-- provide 也只是注入副本，不会共享一份数据 -->
-<!-- 在这种情况下我都觉得可能是需要一份vuex了 -->
-<!-- 不过还是要先尝试下 vue 自带的 $emit $on $watch -->
-<!-- 官方的 watch 方法类似computed，当双向流反馈数据变更的是偶触发回调 -->
 <!-- provide/inject 是注入依赖。不能依赖内部的值 -->
 
 <!-- 这个项目要想移动端适配，还是非常费力的 -->

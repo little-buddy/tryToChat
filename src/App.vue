@@ -32,4 +32,8 @@
 	.bg {
 		background-color: $bgColor;
 	}
+
+	.horizontalLayout {
+		@include horizontal-theme;
+	}
 </style>

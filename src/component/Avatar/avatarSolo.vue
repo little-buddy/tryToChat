@@ -2,7 +2,6 @@
 	<div
 		@mouseenter="onOverHandle"
 		@mouseleave="onOutHandle"
-		@click="onClickHandle"
 	>
 		<slot></slot>
 		<div
@@ -12,9 +11,7 @@
 		></div>
 	</div>
 </template>
-
-<!-- 我觉得还是必要包裹 avatar的，毕竟 -->
-<!-- 对于这里 li的mouse事件其实就是为了分层，便于管理，click事件应该是属于这一层的 -->
+<!-- 我们要触发父元素带动子元素的更新，就需要 使用ref去拿到子元素并且emit一下 -->
 <script>
 	import avatar from "./avatar";
 
@@ -40,21 +37,14 @@
 			onOverHandle($event) {
 				this.hoverMark = true
 				this.hoverHandle(this.account)
-				// this.$emit("hoverEvent",
-				// 	$event, { account: this.info.account, name: this.info.username });
-				// this.canClose = true;
 			},
 			onOutHandle($event) {
 				this.hoverMark = false
-				this.hoverHandle("")
-				// 取消一个username 提示框
-				// this.$emit("hoverEvent", $event, { account: "", name: "" });
-				// this.canClose = false;
-				//	对this.account 的操作
+				// 我这边必须获取一个parent，但是一旦获取了parent，意味着这个组件存在了耦合
+				// 我需要剔除 这个 子父元素的耦合
+				if (!this.$parent.mask)
+					this.hoverHandle("")
 			},
-			onClickHandle($event) {
-				//	需要更新 account password loginStatus ...
-			}
 		}
 	};
 </script>

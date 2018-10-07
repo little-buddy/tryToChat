@@ -1,33 +1,41 @@
 <template>
 	<div class="chat-avatar-box">
-		<div class="chat-avatar-ul">
-			<div
+		<div class="chat-avatar-ul" ref="$ul">
+			<chat-avatar-solo
 				v-for="(user,index) in avatarList"
 				class="chat-avatar-li"
+				:account="user.account"
+				:canClose="isListEnd(index)"
+				:hoverHandle="hoverHandle(index)"
+				@closeEvent="removeByIndex(index)"
+				@click.native="toChoose($event,index)"
+				:key="index"
 			>
-				<!-- 这里我不想要传递index啊 -->
-				<chat-avatar-solo
-					:account="user.account"
-					:canClose="isListEnd(index)"
-					@closeEvent="removeByIndex(index)"
-					:hoverHandle="hoverHandle(index)"
-					:key="index"
+				<chat-avatar
+					v-if="isListEnd(index)"
+					:src="user.avatar"
+					:nickname="user.nickname"
+				></chat-avatar>
+				<div
+					v-else
+					class="chat-avatar-small"
+					@click.native="toChoose($event)"
 				>
-					<chat-avatar
-						v-if="isListEnd(index)"
-						:src="user.avatar"
-						:nickname="user.nickname"
-						@click.native="toChoose($event,index)"
-					></chat-avatar>
-					<div
-						v-else
-						class="chat-avatar-small"
-						@click.native="toChoose($event)"
-					>
-						<div class="addAvater"></div>
-					</div>
-				</chat-avatar-solo>
-			</div>
+					<div class="addAvater"></div>
+				</div>
+			</chat-avatar-solo>
+		</div>
+		<div
+			v-if="mask"
+			class="chat-avatar-ul-curU"
+		>
+			<chat-avatar
+				class="animation"
+				:src="activeAvater.avatarUrl"
+				:style="aniStyle"
+				:class="aniClass"
+				@click.native="noChoose()"
+			></chat-avatar>
 		</div>
 	</div>
 </template>
@@ -37,6 +45,7 @@
 	import avatarSolo from "./avatarSolo";
 
 	const defaultAvater = require("@/assets/img/me.jpg");
+	// no secure
 	const aniTime = 700;
 	export default {
 		name: "chat-avatar-choose",
@@ -55,6 +64,12 @@
 			},
 			liMouseEnter: Function
 		},
+		mounted() {
+			// init 初始化位置
+			const { offsetLeft: left, offsetTop: top } = this.$refs.$ul.children[0]
+			this.activeAvater.location = { left, top }
+			//	我们也可以只记录那个 index，让它 对index进行响应，但是必须获取$event 事件的
+		},
 		data() {
 			this.avatarList.push({})
 			return {
@@ -67,7 +82,7 @@
 						this.avatarList[this.current] ? this.avatarList[this.current].avatar :
 							defaultAvater,
 					// [warning]! this value depend on css value
-					location: { top: 18, left: 16 }
+					location: {}
 				},
 				aniStyle: null,
 				aniClass: "chat-avatar-large",
@@ -90,23 +105,39 @@
 				}
 			},
 			toChoose($event, index) {
+				// 防抖
 				if (this.lock) {
 					return;
 				}
-				// offset relative to parentNode
-				const { offsetLeft, offsetTop } = $event.currentTarget;
-				// overflow
-				const { scrollTop } = $event.currentTarget.parentNode;
-				this.activeAvater = index !== undefined ?
-					{ avatarUrl: this.items[index].avatar } :
-					// default
-					{ avatarUrl: defaultAvater };
+				let top = null;
+				let left = null
+				if ($event !== undefined && index !== undefined) {
+					this.activeAvater = index !== this.avatarList.length - 1
+						? { avatarUrl: this.avatarList[index].avatar }
+						: { avatarUrl: defaultAvater }; // default
+					// offset relative to parentNode
+					const _node = $event.currentTarget
+					const { offsetLeft, offsetTop } = _node;
+					// TODO 现阶段去jquery，那么一些动画兼容api 是怎么处理的呢？
+					// parentNode 是w3c标准，parentElement是IE标准，offsetParent 是指与位置有关的父元素(relative)，而其余不是
 
-				const left = offsetLeft;
-				const top = offsetTop - scrollTop;
-				// cache
-				this.activeAvater.location = { left, top };
-				// 获取元素的宽高
+					// element.style 内联样式
+					// getComputedStyle 获取的是最终样式，会包含css中的样式
+
+					// 需要获取父元素的padding
+					// overflow
+					const { scrollTop } = _node.parentNode;
+					left = offsetLeft;
+					top = offsetTop - scrollTop;
+					// cache for clear
+					this.activeAvater.location = { left, top };
+				} else {
+					this.activeAvater.avatarUrl = defaultAvater
+					left = this.activeAvater.location.left
+					top = this.activeAvater.location.top
+				}
+
+				// css 元素的宽高
 				this.aniStyle = {
 					top: `${top}px`,
 					left: `${left}px`
@@ -117,22 +148,17 @@
 				// 解决暴力的办法就是预先在data内声明，这里说它是纯组件，我都不信，超耦合的ui响应，以及对应的css名称
 				// 不过这里的css 是可以写成transition的形式的
 
-				// 用 setTimeout 做vue的动画是真的有点丑啊
-
-				// $nextTick 并不是在第一次渲染队列渲染完成后执行，而是在第一次渲染完成虚拟dom之后操作，最终是一次更新到tree
-
 				// 这里还是需要一定间隔的，否则频繁点击就等效nextTick功能了
 				setTimeout(() => {
 					this.aniStyle = null;
 					this.aniClass = "chat-avatar-large";
 				}, 100);
 				// animation end to run
+				this.lock = true;
+				this.mask = true;
 				setTimeout(() => {
 					this.lock = false;
 				}, aniTime);
-
-				this.lock = true;
-				this.mask = !this.mask;
 			},
 			noChoose() {
 				if (this.lock) {
@@ -143,7 +169,6 @@
 				this.aniStyle = { top: `${top}px`, left: `${left}px` };
 				this.lock = true;
 				setTimeout(() => {
-					this.activeAvater = null;
 					this.aniClass = null;
 					this.aniStyle = null;
 					this.lock = false;
@@ -167,9 +192,12 @@
 	.chat-avatar-ul-curU {
 		position: absolute;
 		background-color: #fff;
-		width: 100%;
-		height: 200px;
+		/*width: 100%;*/
+		/*height: 200px;*/
 		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
 	}
 
 	.animation {
@@ -234,9 +262,4 @@
 	}
 </style>
 
-<!-- 我感觉我写的不像是组件，反而已经是业务组件了 -->
-
-<!--
-react 如果要做这个的话，要么组件一层一层传值，要么使用context
-API。组件库是不可能上react-redux的，当然使用redux也是可以的，毕竟没多少kb的api
- -->
+<!-- 事实证明。复杂的ui交互。并不比业务来得简单 -->

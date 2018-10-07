@@ -18,6 +18,7 @@
 			v-if="hoverSwitch"
 			class="avatar-hover-name"
 			:style="nameStyle"
+			@click.stop=""
 		>
 			{{nickname}}
 		</div>
@@ -70,15 +71,13 @@
 				}
 				const { offsetX, offsetY } = $event;
 				// 取 x y 的时候会要判断父轴的距离，我不知道是不是根据 position:relative 来计算的
-				const location = { top: `${offsetY}px`, left: `${offsetX}px` };
+				const location = { top: `${offsetY+5}px`, left: `${offsetX+5}px` };
 
-				// 最终这里在运算的过程中还是会跟 css共享常数变量的，如果要响应式的话，需要rem换算的
-				// 目前定义的是
-				const width: number = 250
+				const _node = $event.target
 				// use wrapperWidth \ boxNode \ curNode 侵入性看起来有点强呀
 				// TODO 其实这里还应该获取显示元素的宽度进行判断，或者定死用 ... 显示
-				const left = $event.target.parentNode.parentNode.offsetLeft + offsetX
-				if (left > width - $event.target.offsetWidth) {
+				const left = _node.parentNode.offsetLeft + offsetX
+				if (left > _node.parentNode.parentNode.clientWidth - _node.offsetWidth) {
 					location.left = 0
 				}
 				this.nameStyle = location
